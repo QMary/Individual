@@ -1,0 +1,305 @@
+import java.util.ArrayList;
+
+public class Hotel implements Runnable {
+    private int c_l_1;
+    private int c_s_1;
+    private int c_e_1;
+
+    private int c_l_2;
+    private int c_s_2;
+    private int c_e_2;
+
+    private int c_l_3;
+    private int c_s_3;
+    private int c_e_3;
+
+    private ArrayList<Application>luxe;
+    private ArrayList<Application> eco;
+    private ArrayList<Application> standard;
+    private ArrayList<Application> queue;
+
+    public Hotel( int c_l_1, int c_l_2, int c_l_3, int c_e_1, int c_e_2, int c_e_3, int c_s_1, int c_s_2, int c_s_3) {
+        queue= new ArrayList<Application>();
+        Thread thread = new Thread(this);
+        thread.start();
+
+        this.c_l_1  = c_l_1;
+        this.c_s_1  = c_s_1;
+        this.c_e_1  = c_e_1;
+
+        this.c_l_2  = c_l_2;
+        this.c_s_2  = c_s_2;
+        this.c_e_2  = c_e_2;
+
+        this. c_l_3  = c_l_3;
+        this. c_s_3  = c_s_3;
+        this. c_e_3  = c_e_3;
+        luxe = new ArrayList<Application>(c_l_1 +c_l_2+ c_l_3);
+        eco = new ArrayList<Application>(c_e_1 +c_e_2+ c_e_3);
+        standard = new ArrayList<Application>(c_s_1 +c_s_2+ c_s_3);
+    }
+
+    public boolean preAdd(Application p) {
+        String condition =p.getCondition();
+        if(condition.equals("Luxe")){
+            if (luxe.size()< c_l_1 +c_l_2+ c_l_3) {
+                if (p.getPeople() == 1 && c_l_1 > 0) {
+                    //luxe.add(p);
+                    c_l_1--;
+                    return true;
+                }
+                if (p.getPeople() == 2 && c_l_2 > 0) {
+                    //luxe.add(p);
+                    c_l_2--;
+                    return true;
+                }
+
+                if (p.getPeople() == 3 && c_l_3 > 0) {
+                   // luxe.add(p);
+                    c_l_3--;
+                    return true;
+                }
+              else return false;
+
+            }
+        }
+
+        if(condition.equals("Eco")){
+            if(eco.size()< c_e_1 +c_e_2+ c_e_3){
+                if (p.getPeople() == 1 && c_e_1 > 0) {
+                    //eco.add(p);
+                    c_e_1--;
+                    return true;
+                }
+                if (p.getPeople() == 2 && c_e_2 > 0) {
+                    //eco.add(p);
+                    c_e_2--;
+                    return true;
+                }
+
+                if (p.getPeople() == 3 && c_e_3 > 0) {
+                    //eco.add(p);
+                    c_e_3--;
+                    return true;
+                }
+                else return false;
+            }
+        }
+        if(condition.equals("Standard")){
+            if(standard.size()<c_s_1 +c_s_2+ c_s_3) {
+                if (p.getPeople() == 1 && c_s_1 > 0) {
+                   // standard.add(p);
+                    c_s_1--;
+                    return true;
+                }
+                if (p.getPeople() == 2 && c_s_2 > 0) {
+                   // standard.add(p);
+                    c_s_2--;
+                    return true;
+                }
+
+                if (p.getPeople() == 3 && c_s_3 > 0) {
+                   // standard.add(p);
+                    c_s_3--;
+                    return true;
+                }
+                else return false;
+            }
+        }
+       return false;
+    }
+
+    public void Add(Application p) {
+        String condition =p.getCondition();
+
+        if(preAdd(p)){
+            if(condition.equals("Luxe")){luxe.add(p);}
+            if(condition.equals("Eco")){eco.add(p);}
+            if(condition.equals("Standard")){standard.add(p);}
+            p.Start();
+            System.out.println(p.Surname() + " Added"+ " Time left: "+ p.getTime()+" "+ p.getPeople());
+        }
+        else Wait(p);
+    }
+
+    private void Wait(Application p) {
+      queue.add(p);
+      System.out.println("Name: "+ p.Surname()+": People Required  "+ p.getPeople()+" is in Queue");
+    }
+
+    public void MoveQueue(){
+        boolean b = true;
+        while (b) {
+             for(int i = 0; i< luxe.size(); i++){
+                 if(luxe.contains(luxe.get(i))&& !luxe.isEmpty()){
+                     if (luxe.get(i).Is()) {
+                         b = false;
+                         if(luxe.get(i).getPeople() == 1){
+                             this.c_l_1++;
+                         }
+                         if(luxe.get(i).getPeople() == 2){
+                             this.c_l_2++;
+                         }
+                         if(luxe.get(i).getPeople() == 3){
+                             this.c_l_3++;
+                         }
+                         System.out.println(luxe.get(i).Surname() + "  left");
+                         luxe.remove(luxe.get(i));
+
+                     }
+                 }
+             }
+
+            for(int i = 0; i< eco.size(); i++){
+                if(eco.contains(eco.get(i))&& !eco.isEmpty()){
+                    if (eco.get(i).Is()) {
+                        b = false;
+                        if(eco.get(i).getPeople() == 1){
+                            this.c_e_1++;
+                        }
+                        if(eco.get(i).getPeople() == 2){
+                            this.c_e_2++;
+                        }
+                        if(eco.get(i).getPeople() == 3){
+                            this.c_e_3++;
+                        }
+                        System.out.println(eco.get(i).Surname() + "  left");
+                        eco.remove(eco.get(i));
+                    }
+                }
+            }
+
+            for(int i = 0; i< standard.size(); i++){
+                if(standard.contains(standard.get(i))&& !standard.isEmpty()){
+                    if (standard.get(i).Is()) {
+                        b = false;
+                        if(standard.get(i).getPeople() ==1){
+                            this.c_s_1++;
+                        }
+                        if(standard.get(i).getPeople() ==2){
+                            this.c_s_2++;
+                        }
+                        if(standard.get(i).getPeople() ==3){
+                            this.c_s_3++;
+                        }
+                        System.out.println(standard.get(i).Surname() + "  left");
+                        standard.remove(standard.get(i));
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        while (true){
+           MoveQueue();
+           Enter();
+        }
+    }
+
+    private void Enter() {
+        if(!queue.isEmpty()){
+            for(int i=0;i<queue.size(); i++){
+              String c = queue.get(i).getCondition();
+                if(c.equals("Luxe")){
+                   if(luxe.size()<c_l_1 +c_l_2+ c_l_3){
+                       if(queue.get(i).getPeople()  == 1 && c_l_1> 0){
+                               Add(queue.get(i));
+                           queue.remove(i);
+                           break;
+                       }
+                       if(queue.get(i).getPeople()  == 2 && c_l_2> 0){
+                               Add(queue.get(i));
+                           queue.remove(i);
+                           break;
+                       }
+                       if(queue.get(i).getPeople()  == 3 && c_l_3> 0) {
+                               Add(queue.get(i));
+                               queue.remove(i);
+                           break;
+                       }
+                   }
+                }
+
+                if(c.equals("Eco")){
+                    if(eco.size()<c_e_1 +c_e_2+ c_e_3) {
+                        if(queue.get(i).getPeople()  == 1 && c_e_1> 0) {
+                                Add(queue.get(i));
+                                queue.remove(i);
+                            break;
+                        }
+                        if(queue.get(i).getPeople()  == 2 && c_e_2> 0) {
+                                Add(queue.get(i));
+                                queue.remove(i);
+                            break;
+                        }
+                        if(queue.get(i).getPeople()  == 3 && c_e_3> 0) {
+                                Add(queue.get(i));
+                                queue.remove(i);
+                            break;
+                        }
+                    }
+                }
+
+                if(c.equals("Standard")) {
+                 if(standard.size()<c_s_1 +c_s_2+ c_s_3) {
+                    if(queue.get(i).getPeople()  == 1 && c_s_1> 0) {
+                            Add(queue.get(i));
+                            queue.remove(i);
+                    }
+                    if(queue.get(i).getPeople()  == 2 && c_s_2> 0) {
+                            Add(queue.get(i));
+                            queue.remove(i);
+
+                    }
+                    if(queue.get(i).getPeople()  == 3 && c_s_3> 0) {
+                            Add(queue.get(i));
+                            queue.remove(i);
+                    }
+                 }
+              }
+            }
+        }
+    }
+}
+class Main{
+    public static void main(String[] args) throws InterruptedException {
+
+                    Hotel hotel = new Hotel(1,1,1, 1,1,1, 1,1,1);
+                    Application app1 = new Application("1", 1000,"Luxe",1);
+                    Thread.sleep(100);
+                    Application app2 = new Application("2", 100,"Eco",2);
+                    Thread.sleep(100);
+                    Application app3 = new Application("3", 700,"Standard",3);
+                    Thread.sleep(100);
+                    Application app5 = new Application("5", 1000,"Standard",1);
+                    Thread.sleep(100);
+                    Application app6 = new Application("6", 200,"Eco", 3);
+                    Thread.sleep(100);
+                    Application app7 = new Application("7", 1200,"Luxe",1);
+                    Thread.sleep(100);
+                    Application app8 = new Application("8", 400,"Eco",3);
+                    Thread.sleep(100);
+                    Application app9 = new Application("9", 1500,"Standard",1);
+                    Thread.sleep(100);
+                    Application app10 = new Application("10", 600,"Eco",2);
+                    Thread.sleep(100);
+                    Application app0 = new Application("11", 1,"Luxe",1);
+                    Thread.sleep(100);
+                    Application app = new Application("12", 600,"Standard",3);
+
+
+                    hotel.Add(app1);
+                    hotel.Add(app2);
+                    hotel.Add(app3);
+                    hotel.Add(app5);
+                    hotel.Add(app6);
+                    hotel.Add(app7);
+                    hotel.Add(app8);
+                    hotel.Add(app9);
+                    hotel.Add(app10);
+                    hotel.Add(app0);
+                    hotel.Add(app);
+        }
+    }
