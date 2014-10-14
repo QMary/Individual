@@ -1,0 +1,56 @@
+import java.util.ArrayList;
+
+public class Application extends ArrayList<Application> implements Runnable  {
+    private String surname;
+    private  int time;
+    private Thread thread;
+    private String condition;
+    private boolean isH= false;
+    private int sec = 0;
+    private int people;
+
+    public void Start(){
+        thread.start();
+    }
+
+    public int getPeople(){
+        return people;
+    }
+     public int getTime(){
+         return time;
+     }
+
+    public String getCondition(){
+        return this.condition;
+    }
+
+    public Application(String surname, int time, String condition, int people){
+        thread = new Thread(this);
+        this.condition = condition;
+        this.time = time;
+        this.surname = surname;
+        this.people = people;
+    }
+
+    public boolean Is(){
+        return isH;
+    }
+    @Override
+    public void run() {
+        while (sec <= time) {
+            sec++;
+            try {
+                thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (sec == time) {
+                isH = true;
+            }
+        }
+    }
+    public String Surname(){
+        return surname;
+    }
+
+}
